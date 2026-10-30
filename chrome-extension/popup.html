@@ -1,0 +1,25 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; --ok: #10b981; --idle: #6b7280; --warn: #f59e0b; }
+  body { font: 13px/1.4 system-ui, sans-serif; margin: 0; padding: 14px 16px; width: 270px; }
+  h1 { font-size: 14px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--idle); flex: none; }
+  .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); }
+  .big { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .muted { opacity: .7; }
+  label { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  input[type=range] { width: 100%; margin: 6px 0 0; }
+  .row { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  button { font: inherit; padding: 2px 8px; }
+</style>
+<h1><span class="dot" id="dot"></span><span id="title">Sonos Sync</span></h1>
+<div id="detail" class="muted">Checking the Sonos Cast app...</div>
+<div id="tab" class="muted" style="margin-top:6px"></div>
+<label>Sync video to the Sonos <input type="checkbox" id="enabled"></label>
+<label style="display:block">
+  <div class="row"><span>Fine-tune</span><span id="offsetText"></span></div>
+  <input type="range" id="offset" min="-200" max="200" step="10">
+  <div class="row muted"><span>sound early</span><button id="zero">reset</button><span>sound late</span></div>
+</label>
+<script src="popup.js"></script>

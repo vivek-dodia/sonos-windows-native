@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write  # attach the exe to GitHub releases on version tags
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Test (no hardware needed)
+        run: python tests/test_pacing.py
+
+      - name: Build SonosCast.exe
+        run: pyinstaller SonosCast.spec --noconfirm
+
+      - name: Self-test the exe
+        shell: pwsh
+        run: |
+          $p = Start-Process dist\SonosCast.exe -ArgumentList "--selftest", "selftest.txt" -Wait -PassThru
+          Get-Content selftest.txt
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Package the Chrome extension
+        shell: pwsh
+        run: Compress-Archive -Path chrome-extension\* -DestinationPath dist\SonosSync-chrome-extension.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SonosCast
+          path: |
+            dist/SonosCast.exe
+            dist/SonosSync-chrome-extension.zip
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/SonosCast.exe
+            dist/SonosSync-chrome-extension.zip
+          generate_release_notes: true

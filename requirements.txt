@@ -1,0 +1,12 @@
+soco
+PyAudioWPatch
+lameenc
+numpy
+pycaw
+pystray
+pillow
+winrt-runtime
+winrt-Windows.Media.Control
+winrt-Windows.Foundation
+# building the exe: pyinstaller   (then: pyinstaller SonosCast.spec)
+# tests only: playwright          (then: python -m playwright install chromium)
